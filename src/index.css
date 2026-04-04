@@ -45,3 +45,35 @@ body {
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: #222; border-radius: 2px; }
 ::-webkit-scrollbar-thumb:hover { background: #333; }
+
+/* Tool color utilities */
+.text-tool-bash { color: var(--color-tool-bash); }
+.text-tool-agent { color: var(--color-tool-agent); }
+.text-tool-read { color: var(--color-tool-read); }
+.text-tool-grep { color: var(--color-tool-grep); }
+.text-tool-edit { color: var(--color-tool-edit); }
+.text-tool-write { color: var(--color-tool-write); }
+.text-tool-skill { color: var(--color-tool-skill); }
+.text-tool-task { color: var(--color-tool-task); }
+.text-tool-default { color: var(--color-tool-default); }
+
+.bg-tool-bash\/5 { background-color: color-mix(in srgb, var(--color-tool-bash) 5%, transparent); }
+.bg-tool-agent\/5 { background-color: color-mix(in srgb, var(--color-tool-agent) 5%, transparent); }
+.bg-tool-read\/5 { background-color: color-mix(in srgb, var(--color-tool-read) 5%, transparent); }
+.bg-tool-grep\/5 { background-color: color-mix(in srgb, var(--color-tool-grep) 5%, transparent); }
+.bg-tool-edit\/5 { background-color: color-mix(in srgb, var(--color-tool-edit) 5%, transparent); }
+.bg-tool-write\/5 { background-color: color-mix(in srgb, var(--color-tool-write) 5%, transparent); }
+.bg-tool-skill\/5 { background-color: color-mix(in srgb, var(--color-tool-skill) 5%, transparent); }
+.bg-tool-task\/3 { background-color: color-mix(in srgb, var(--color-tool-task) 3%, transparent); }
+.bg-error\/4 { background-color: color-mix(in srgb, var(--color-error) 4%, transparent); }
+
+.border-tool-bash\/15 { border-color: color-mix(in srgb, var(--color-tool-bash) 15%, transparent); }
+.border-tool-agent\/20 { border-color: color-mix(in srgb, var(--color-tool-agent) 20%, transparent); }
+.border-tool-read\/15 { border-color: color-mix(in srgb, var(--color-tool-read) 15%, transparent); }
+.border-tool-grep\/15 { border-color: color-mix(in srgb, var(--color-tool-grep) 15%, transparent); }
+.border-tool-edit\/15 { border-color: color-mix(in srgb, var(--color-tool-edit) 15%, transparent); }
+.border-tool-write\/15 { border-color: color-mix(in srgb, var(--color-tool-write) 15%, transparent); }
+.border-tool-skill\/15 { border-color: color-mix(in srgb, var(--color-tool-skill) 15%, transparent); }
+.border-tool-task\/12 { border-color: color-mix(in srgb, var(--color-tool-task) 12%, transparent); }
+.border-tool-agent\/30 { border-color: color-mix(in srgb, var(--color-tool-agent) 30%, transparent); }
+.border-error\/20 { border-color: color-mix(in srgb, var(--color-error) 20%, transparent); }
