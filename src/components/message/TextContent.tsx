@@ -5,7 +5,7 @@ interface TextContentProps {
   role: "user" | "assistant" | "system";
 }
 
-function cleanText(text: string): string {
+export function cleanText(text: string): string {
   return text
     .replace(/<system-reminder>[\s\S]*?<\/system-reminder>/g, "")
     .replace(/<command-[^>]*>[\s\S]*?<\/command-[^>]*>/g, "")

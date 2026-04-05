@@ -23,7 +23,7 @@ export function Sidebar({
   onToolFilterChange,
 }: SidebarProps) {
   return (
-    <div className="w-80 border-r border-border flex flex-col bg-background">
+    <div className="w-full h-full flex flex-col bg-background">
       <div className="p-4 border-b border-border">
         <div className="flex items-center gap-2 mb-3">
           <div className="w-2 h-2 rounded-full bg-accent shadow-[0_0_8px_rgba(34,197,94,0.4)]" />

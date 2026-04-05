@@ -11,10 +11,15 @@ const ROLE_LABELS: Record<string, string> = {
   system: "SYSTEM",
 };
 
-function formatTimestamp(ts: string): string {
+function formatDateTime(ts: string): string {
   try {
     const d = new Date(ts);
-    return d.toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+    const month = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    const hour = String(d.getHours()).padStart(2, "0");
+    const min = String(d.getMinutes()).padStart(2, "0");
+    const sec = String(d.getSeconds()).padStart(2, "0");
+    return `${month}-${day} ${hour}:${min}:${sec}`;
   } catch {
     return ts;
   }
@@ -33,7 +38,7 @@ export function RoleBar({ role, model, version, timestamp }: RoleBarProps) {
     system: "text-role-system",
   };
 
-  const time = timestamp ? formatTimestamp(timestamp) : "";
+  const time = timestamp ? formatDateTime(timestamp) : "";
 
   return (
     <div className="flex items-center gap-2 mb-2 px-0.5 font-mono">

@@ -1,5 +1,5 @@
 import { RoleBar } from "./RoleBar";
-import { TextContent } from "./TextContent";
+import { TextContent, cleanText } from "./TextContent";
 import { ToolCallCard } from "./ToolCallCard";
 import type { ParsedMessage } from "@/lib/types";
 
@@ -8,6 +8,12 @@ interface MessageBlockProps {
 }
 
 export function MessageBlock({ message }: MessageBlockProps) {
+  const hasToolCalls = message.toolCalls && message.toolCalls.length > 0;
+  const cleanedText = cleanText(message.textContent);
+
+  // Skip messages with no visible content (empty after cleaning + no tool calls)
+  if (!cleanedText && !hasToolCalls) return null;
+
   return (
     <div className="mb-4">
       <RoleBar
