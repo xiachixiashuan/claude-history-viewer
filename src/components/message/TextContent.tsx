@@ -5,7 +5,6 @@ interface TextContentProps {
   role: "user" | "assistant" | "system";
 }
 
-// Strip all XML-like tags injected by Claude Code system
 function cleanText(text: string): string {
   return text
     .replace(/<system-reminder>[\s\S]*?<\/system-reminder>/g, "")
@@ -23,13 +22,11 @@ function cleanText(text: string): string {
     .trim();
 }
 
-// Detect skill injection messages
 function isSkillInjection(text: string): boolean {
   return text.startsWith("Base directory for this skill:") ||
     text.startsWith("Launching skill:");
 }
 
-// Simple markdown-to-HTML renderer
 function renderMarkdown(text: string): string {
   return text
     .replace(/```(\w*)\n([\s\S]*?)```/g, '<pre class="bg-black/30 rounded p-2 my-1 overflow-x-auto text-[10px]"><code>$2</code></pre>')
@@ -45,23 +42,26 @@ function renderMarkdown(text: string): string {
 const MAX_LINES = 8;
 
 export function TextContent({ text, role }: TextContentProps) {
+  // All hooks at the top — React requires consistent hook call order
+  const [skillExpanded, setSkillExpanded] = useState(false);
+  const [textExpanded, setTextExpanded] = useState(false);
+
   if (!text.trim()) return null;
 
   const cleaned = cleanText(text);
   if (!cleaned) return null;
 
-  // Collapse skill injection messages
   const isSkill = isSkillInjection(cleaned);
-  const [expanded, setExpanded] = useState(false);
 
-  if (isSkill && !expanded) {
+  // Skill injection: collapsed by default
+  if (isSkill && !skillExpanded) {
     const firstLine = cleaned.split("\n")[0];
     return (
       <div className="text-xs py-1.5 px-3 text-muted-foreground/50 font-mono flex items-center gap-2">
         <span className="text-tool-skill">⚙</span>
         <span className="truncate">{firstLine}</span>
         <button
-          onClick={() => setExpanded(true)}
+          onClick={() => setSkillExpanded(true)}
           className="text-[9px] text-accent/50 hover:text-accent shrink-0 cursor-pointer"
         >
           展开
@@ -70,33 +70,44 @@ export function TextContent({ text, role }: TextContentProps) {
     );
   }
 
-  // For long user messages, add collapse
-  const lines = cleaned.split("\n");
-  const isLong = role === "user" && lines.length > MAX_LINES;
-  const [textExpanded, setTextExpanded] = useState(false);
+  // Skill injection expanded: show full content with collapse button
+  if (isSkill && skillExpanded) {
+    return (
+      <div className="relative">
+        <div className="text-xs leading-relaxed py-2 px-3 text-card-foreground bg-accent/3 rounded font-mono whitespace-pre-wrap max-h-[300px] overflow-y-auto">
+          {cleaned}
+        </div>
+        <button
+          onClick={() => setSkillExpanded(false)}
+          className="ml-3 mb-1 text-[9px] text-accent/70 hover:text-accent font-mono cursor-pointer"
+        >
+          收起
+        </button>
+      </div>
+    );
+  }
 
-  const displayText = isLong && !textExpanded
-    ? lines.slice(0, MAX_LINES).join("\n")
-    : cleaned;
-
-  const baseClass = "text-xs leading-relaxed py-2 px-3";
-  const roleClass = role === "user"
-    ? "text-card-foreground bg-accent/3 rounded font-mono whitespace-pre-wrap"
-    : "text-muted-foreground";
-
+  // Assistant text: render markdown
   if (role === "assistant") {
     const html = renderMarkdown(cleaned);
     return (
       <div
-        className={`${baseClass} ${roleClass}`}
+        className="text-xs leading-relaxed py-2 px-3 text-muted-foreground"
         dangerouslySetInnerHTML={{ __html: html }}
       />
     );
   }
 
+  // User text: collapse if long
+  const lines = cleaned.split("\n");
+  const isLong = lines.length > MAX_LINES;
+  const displayText = isLong && !textExpanded
+    ? lines.slice(0, MAX_LINES).join("\n")
+    : cleaned;
+
   return (
     <div className="relative">
-      <div className={`${baseClass} ${roleClass} whitespace-pre-wrap ${isLong && !textExpanded ? "max-h-[120px] overflow-hidden" : ""}`}>
+      <div className={`text-xs leading-relaxed py-2 px-3 text-card-foreground bg-accent/3 rounded font-mono whitespace-pre-wrap ${isLong && !textExpanded ? "max-h-[120px] overflow-hidden" : ""}`}>
         {displayText}
       </div>
       {isLong && !textExpanded && (
