@@ -214,7 +214,12 @@ export async function getSessionSummary(filePath: string): Promise<SessionSummar
     if (!endTimestamp || ts > endTimestamp) endTimestamp = ts;
 
     if (type === "user" && !firstUserMessage && text.trim()) {
-      const cleaned = text.replace(/<system-reminder>[\s\S]*?<\/system-reminder>/g, "").trim();
+      const cleaned = text
+        .replace(/<system-reminder>[\s\S]*?<\/system-reminder>/g, "")
+        .replace(/<command-[^>]*>[\s\S]*?<\/command-[^>]*>/g, "")
+        .replace(/<local-command-[^>]*>[\s\S]*?<\/local-command-[^>]*>/g, "")
+        .replace(/<[^>]+>/g, "")
+        .trim();
       if (cleaned) firstUserMessage = cleaned.slice(0, 80);
     }
 
