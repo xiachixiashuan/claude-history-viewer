@@ -17,14 +17,19 @@ export function MessageFlow({ messages, summary }: MessageFlowProps) {
 
   const toolCount = Object.values(summary.toolCallCounts).reduce((a, b) => a + b, 0);
 
+  // Clean XML tags from title
+  const title = (summary.firstUserMessage || "Session")
+    .replace(/<[^>]+>/g, "")
+    .trim() || "Session";
+
   return (
     <div className="flex flex-col h-full">
       <div className="px-6 py-3 border-b border-border flex items-center gap-3 shrink-0">
         <h2 className="font-mono text-sm font-medium text-foreground truncate">
-          {summary.firstUserMessage || "Session"}
+          {title}
         </h2>
         <span className="text-[10px] px-2 py-0.5 rounded-full border border-accent/20 text-accent font-mono shrink-0">
-          {summary.cwd?.split("/").pop() ?? summary.project}
+          {summary.cwd?.split("/").slice(-2).join("/") ?? summary.project}
         </span>
         <span className="ml-auto text-[10px] text-muted-foreground font-mono shrink-0">
           {toolCount} tool calls · {summary.messageCount} messages · {summary.sessionId.slice(0, 8)}

@@ -8,16 +8,13 @@ interface SessionListProps {
   onSelect: (id: string) => void;
 }
 
-function decodeProjectPath(encoded: string): string {
-  // "-Users-wendale-learn-claude-toolbox-v3" → "/Users/wendale/learn/claude-toolbox-v3"
-  return encoded.replace(/^-/, "/").replace(/-/g, "/");
-}
-
-function getProjectDisplayName(encoded: string): string {
-  const decoded = decodeProjectPath(encoded);
-  // Show relative to home: ~/learn/claude-toolbox-v3
-  const home = decoded.replace(/^\/Users\/[^/]+/, "~");
-  return home;
+function getProjectDisplayName(cwd: string | undefined, encoded: string): string {
+  if (cwd) {
+    // Use real cwd path, show relative to home
+    return cwd.replace(/^\/Users\/[^/]+/, "~");
+  }
+  // Fallback: just show encoded name without leading dash
+  return encoded.replace(/^-/, "");
 }
 
 export function SessionList({ sessions, activeSessionId, onSelect }: SessionListProps) {
@@ -63,7 +60,8 @@ export function SessionList({ sessions, activeSessionId, onSelect }: SessionList
     <div className="flex-1 overflow-y-auto">
       {Array.from(groups.entries()).map(([project, items]) => {
         const isExpanded = expandedGroups.has(project);
-        const displayName = getProjectDisplayName(project);
+        // Use cwd from first session for real project path
+        const displayName = getProjectDisplayName(items[0]?.cwd, project);
 
         return (
           <div key={project} className="mb-0.5">

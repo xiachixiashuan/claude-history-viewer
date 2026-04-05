@@ -220,7 +220,17 @@ export async function getSessionSummary(filePath: string): Promise<SessionSummar
         .replace(/<local-command-[^>]*>[\s\S]*?<\/local-command-[^>]*>/g, "")
         .replace(/<[^>]+>/g, "")
         .trim();
-      if (cleaned) firstUserMessage = cleaned.slice(0, 80);
+      // Skip skill injections, system content, and internal messages
+      if (cleaned &&
+          !cleaned.startsWith("Base directory for this skill:") &&
+          !cleaned.startsWith("Launching skill:") &&
+          !cleaned.startsWith("Caveat:") &&
+          !cleaned.startsWith("[Request interrupted") &&
+          !cleaned.startsWith("Tool loaded") &&
+          !cleaned.startsWith("Status dialog") &&
+          cleaned.length > 5) {
+        firstUserMessage = cleaned.slice(0, 80);
+      }
     }
 
     if (type === "assistant") {
