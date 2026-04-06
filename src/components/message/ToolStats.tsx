@@ -4,9 +4,10 @@ import { getToolIcon, getToolColor } from "@/lib/types";
 interface ToolStatsProps {
   toolCounts: Record<string, number>;
   onNavigate: (toolName: string, direction: "next" | "prev") => void;
+  navIndex: Record<string, number>;
 }
 
-export function ToolStats({ toolCounts, onNavigate }: ToolStatsProps) {
+export function ToolStats({ toolCounts, onNavigate, navIndex }: ToolStatsProps) {
   const [activeTool, setActiveTool] = useState<string | null>(null);
 
   const entries = Object.entries(toolCounts)
@@ -51,7 +52,10 @@ export function ToolStats({ toolCounts, onNavigate }: ToolStatsProps) {
         {activeTool && (
           <div className="flex items-center gap-1 ml-2 border-l border-border pl-2">
             <span className="text-[10px] text-muted-foreground font-mono">
-              {getToolIcon(activeTool)} {activeTool}
+              {getToolIcon(activeTool)}
+            </span>
+            <span className="text-[10px] text-accent font-mono font-semibold">
+              {(navIndex[activeTool] ?? 0) + 1}/{toolCounts[activeTool] ?? 0}
             </span>
             <button
               onClick={handlePrev}

@@ -113,6 +113,7 @@ export function MessageFlow({ messages, summary, onRefresh }: MessageFlowProps) 
       <ToolStats
         toolCounts={summary.toolCallCounts}
         onNavigate={handleNavigate}
+        navIndex={navIndex}
       />
 
       {/* Messages */}
