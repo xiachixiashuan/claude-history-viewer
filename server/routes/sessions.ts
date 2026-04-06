@@ -48,7 +48,7 @@ sessions.get("/", async (c) => {
         if (toolFilter) {
           const tools = Object.keys(summary.toolCallCounts);
           const match = toolFilter === "Task"
-            ? tools.some(t => t.startsWith("Task") || t === "TodoWrite")
+            ? tools.some(t => t === "TaskCreate" || t === "TaskUpdate")
             : toolFilter === "Web"
             ? tools.some(t => t.startsWith("Web"))
             : tools.includes(toolFilter);
