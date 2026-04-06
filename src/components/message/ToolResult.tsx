@@ -23,7 +23,7 @@ export function ToolResult({ result, isError, toolName }: ToolResultProps) {
   return (
     <div className="mt-2 relative">
       <div
-        className={`p-2 rounded bg-black/30 text-[10px] leading-relaxed font-mono overflow-x-auto ${
+        className={`p-2 rounded bg-black/30 text-[10px] leading-relaxed font-mono whitespace-pre-wrap break-all ${
           isError ? "border-l-2 border-l-error/30" : ""
         } ${isLong && !expanded ? "max-h-[140px] overflow-hidden" : "max-h-[400px] overflow-y-auto"}`}
       >
