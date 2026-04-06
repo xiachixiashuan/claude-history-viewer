@@ -1,64 +1,28 @@
-# Claude History Viewer
+<div align="center">
 
-A beautiful dark-themed conversation history viewer for [Claude Code](https://docs.anthropic.com/en/docs/claude-code), focused on tool call visualization.
+# 🖥️ Claude History Viewer
+
+### ✨ A beautiful dark-themed conversation history viewer for Claude Code ✨
+
+[![Made with React](https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react)](https://react.dev)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind-v4-06B6D4?style=flat-square&logo=tailwindcss)](https://tailwindcss.com)
+[![Powered by Bun](https://img.shields.io/badge/Bun-runtime-FBF0DF?style=flat-square&logo=bun)](https://bun.sh)
+[![Hono](https://img.shields.io/badge/Hono-backend-E36002?style=flat-square&logo=hono)](https://hono.dev)
+[![License: MIT](https://img.shields.io/badge/License-MIT-22c55e?style=flat-square)](LICENSE)
+
+**🔍 Visualize tool calls · 📊 Browse by project · 🎯 Search & filter · 🌙 Terminal dark theme**
+
+[English](#-features) · [中文文档](README.zh-CN.md)
+
+</div>
+
+---
 
 ![Screenshot](docs/images/screenshot.png)
 
-## Features
+## 🚀 Quick Start
 
-### Tool Call Visualization
-
-Each tool type has its own color-coded glassmorphic card with detailed input/output display:
-
-| Tool | Color | Display |
-|------|-------|---------|
-| Bash | Green | Command + output, error state with red border |
-| Agent | Purple | Description + model badge + sub-operation stats |
-| Read | Blue | File path + line range + content preview |
-| Grep | Yellow | Pattern + match count + results |
-| Edit | Pink | File path + diff view (red/green) |
-| Write | Cyan | File path |
-| Skill | Orange | Skill name |
-| TaskCreate/Update | Gray | Task subject / status change |
-
-### Conversation Browser
-
-- **Project-grouped sidebar** - Sessions organized by project directory, click to expand/collapse
-- **Session metadata** - Tool count, tool type dots, timestamp for each session
-- **Message flow** - Full conversation with role bars showing model name, version, and date/time
-- **Search & filter** - Search by keyword, filter by tool type
-- **Resizable sidebar** - Drag to adjust sidebar width (240px - 600px)
-
-### Smart Content Handling
-
-- **Markdown rendering** - Headings, bold, code blocks, lists rendered in assistant messages
-- **XML tag cleaning** - System-injected tags (`<system-reminder>`, `<command-message>`, etc.) automatically stripped
-- **Skill injection collapse** - Long skill content collapsed to single line, expandable on click
-- **Long text collapse** - User messages and tool results with expand/collapse for long content
-- **Diff highlighting** - Edit tool results show red (deleted) / green (added) lines
-- **Empty message filtering** - Messages that become empty after tag cleaning are hidden
-
-### Navigation
-
-- **Scroll to top/bottom** - Floating buttons for quick navigation
-- **Refresh** - Button at bottom to reload current session for new messages
-- **Auto-select** - First session auto-selected on load, group auto-expands when selecting a session
-
-## Tech Stack
-
-- **Frontend**: React 19 + Tailwind CSS v4 + Vite 8
-- **Backend**: Hono + Bun
-- **Fonts**: JetBrains Mono (code) + Inter (UI)
-- **Style**: Dark terminal theme with green accent + glassmorphic tool cards
-
-## Quick Start
-
-### Prerequisites
-
-- [Bun](https://bun.sh/) runtime installed
-- [Claude Code](https://docs.anthropic.com/en/docs/claude-code) with existing conversation history in `~/.claude/`
-
-### Install & Run
+> **Prerequisites:** [Bun](https://bun.sh/) + [Claude Code](https://docs.anthropic.com/en/docs/claude-code) with conversation history in `~/.claude/`
 
 ```bash
 git clone https://github.com/xiachixiashuan/claude-history-viewer.git
@@ -67,41 +31,103 @@ bun install
 bun run dev
 ```
 
-Open http://localhost:5173 in your browser.
+🌐 Open **http://localhost:5173** in your browser.
 
-### Scripts
+## 🎨 Features
+
+### 🔧 Tool Call Visualization
+
+Each tool type gets its own **color-coded glassmorphic card** with detailed input/output:
+
+| Tool | Color | Icon | Display |
+|:-----|:------|:-----|:--------|
+| **Bash** | 🟢 Green | ⚡ | Command + output, red border on error |
+| **Agent** | 🟣 Purple | ⬡ | Description + model badge + sub-op stats |
+| **Read** | 🔵 Blue | 📖 | File path + line range + content preview |
+| **Grep** | 🟡 Yellow | 🔍 | Pattern + match count + results |
+| **Edit** | 🩷 Pink | ✏️ | File path + diff view (🔴 deleted / 🟢 added) |
+| **Write** | 🩵 Cyan | 📝 | File path (new file indicator) |
+| **Skill** | 🟠 Orange | ⚙ | Skill name (collapsible content) |
+| **Task** | ⚪ Gray | 📋 | Task subject / status change |
+
+### 📂 Project-Grouped Sidebar
+
+- 🗂️ **Collapsible groups** — Sessions organized by project, click to expand/collapse
+- 🏷️ **Session cards** — Title, timestamp, tool count, colored tool-type dots
+- 🔍 **Search** — Full-text search across conversations (debounced)
+- 🏷️ **Filter chips** — Quick filter by tool type (Bash, Agent, Skill, Edit...)
+- ↔️ **Resizable** — Drag the edge to adjust width (240px – 600px)
+
+### 💬 Message Flow
+
+- 🟢 **USER** / 🔵 **ASSISTANT** / 🟡 **SYSTEM** — Color-coded role indicators
+- 🤖 **Model badge** — Shows `claude-opus-4-6`, `claude-sonnet-4-5`, etc.
+- 📅 **Date + time** — Full `MM-DD HH:MM:SS` timestamp on every message
+- 🏷️ **Version badge** — Claude Code version (e.g. `2.1.92`)
+
+### 🧹 Smart Content Handling
+
+- 📝 **Markdown rendering** — Headings, bold, code blocks, lists in assistant messages
+- 🔇 **XML tag cleaning** — `<system-reminder>`, `<command-message>` etc. auto-stripped
+- 📦 **Skill collapse** — Long skill injections collapsed to one line with ⚙ icon
+- 📏 **Long text collapse** — Expand/collapse for long messages and tool results
+- 🎨 **Diff highlighting** — Edit results with red/green line coloring
+- 👻 **Empty filtering** — Messages empty after cleaning are hidden
+
+### 🧭 Navigation
+
+- ⬆️⬇️ **Scroll buttons** — Floating top/bottom buttons
+- 🔄 **Refresh** — Reload current session to see new messages
+- 🎯 **Auto-select** — Latest session selected on load
+
+## 🛠️ Tech Stack
+
+| Layer | Technology |
+|:------|:-----------|
+| ⚛️ Frontend | React 19 + Tailwind CSS v4 + Vite 8 |
+| 🔥 Backend | Hono + Bun |
+| 🔤 Fonts | JetBrains Mono (code) + Inter (UI) |
+| 🎨 Theme | Terminal dark (`#09090b`) + green accent (`#22c55e`) + glassmorphism |
+
+## 📜 Scripts
 
 | Command | Description |
-|---------|-------------|
-| `bun run dev` | Start both backend (port 3456) and frontend (port 5173) |
-| `bun run dev:server` | Start backend only |
-| `bun run dev:client` | Start frontend only |
-| `bun run build` | Build frontend for production |
+|:--------|:------------|
+| `bun run dev` | 🚀 Start backend (3456) + frontend (5173) |
+| `bun run dev:server` | 🔧 Backend only |
+| `bun run dev:client` | 🎨 Frontend only |
+| `bun run build` | 📦 Production build |
 
-## Data Source
+## 📁 Data Source
 
-The viewer reads Claude Code's local data files:
+The viewer reads Claude Code's **local data files** (read-only, never modifies):
 
 ```
 ~/.claude/
-  history.jsonl              # Session index (project, sessionId, timestamp)
-  projects/
-    <encoded-project-path>/
-      <sessionId>.jsonl      # Full conversation transcript
-      <sessionId>/
-        subagents/           # Sub-agent transcripts
+├── history.jsonl                    # 📋 Session index
+└── projects/
+    └── <encoded-project-path>/
+        ├── <sessionId>.jsonl        # 💬 Conversation transcript
+        └── <sessionId>/
+            └── subagents/           # 🤖 Sub-agent transcripts
 ```
 
-All data is read-only. The viewer never modifies your Claude Code data.
-
-## API
+## 🔌 API
 
 | Endpoint | Description |
-|----------|-------------|
-| `GET /api/projects` | List all projects with session counts |
-| `GET /api/sessions?project=&tool=&q=` | List sessions, with optional filters |
-| `GET /api/sessions/:id` | Get full session messages and summary |
+|:---------|:------------|
+| `GET /api/projects` | 📂 List projects with session counts |
+| `GET /api/sessions?project=&tool=&q=` | 🔍 List sessions with filters |
+| `GET /api/sessions/:id` | 💬 Full session messages + summary |
 
-## License
+## 📄 License
 
 MIT
+
+---
+
+<div align="center">
+
+**Built with 💚 by Claude Code**
+
+</div>
