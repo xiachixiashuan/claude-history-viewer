@@ -1,5 +1,6 @@
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useCallback, useState } from "react";
 import { MessageBlock } from "./MessageBlock";
+import { ToolStats } from "./ToolStats";
 import type { ParsedMessage, SessionSummary } from "@/lib/types";
 
 interface MessageFlowProps {
@@ -10,13 +11,62 @@ interface MessageFlowProps {
 
 export function MessageFlow({ messages, summary, onRefresh }: MessageFlowProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
+  // Track current navigation index per tool type
+  const [navIndex, setNavIndex] = useState<Record<string, number>>({});
 
   // Scroll to top when session changes
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = 0;
     }
+    setNavIndex({});
   }, [summary?.sessionId]);
+
+  // Build index of tool call positions: toolName → list of DOM data-tool-idx values
+  const toolPositions = useCallback((): Record<string, number[]> => {
+    const positions: Record<string, number[]> = {};
+    let idx = 0;
+    for (const msg of messages) {
+      if (msg.toolCalls) {
+        for (const tc of msg.toolCalls) {
+          if (!positions[tc.name]) positions[tc.name] = [];
+          positions[tc.name].push(idx);
+          idx++;
+        }
+      }
+    }
+    return positions;
+  }, [messages]);
+
+  const handleNavigate = useCallback((toolName: string, direction: "next" | "prev") => {
+    const positions = toolPositions();
+    const indices = positions[toolName];
+    if (!indices || indices.length === 0) return;
+
+    const currentIdx = navIndex[toolName] ?? -1;
+    let nextIdx: number;
+
+    if (direction === "next") {
+      nextIdx = currentIdx < indices.length - 1 ? currentIdx + 1 : 0;
+    } else {
+      nextIdx = currentIdx > 0 ? currentIdx - 1 : indices.length - 1;
+    }
+
+    setNavIndex((prev) => ({ ...prev, [toolName]: nextIdx }));
+
+    // Find the DOM element and scroll to it
+    const targetGlobalIdx = indices[nextIdx];
+    const container = scrollRef.current;
+    if (!container) return;
+
+    const el = container.querySelector(`[data-tool-idx="${targetGlobalIdx}"]`);
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth", block: "center" });
+      // Flash highlight
+      el.classList.add("tool-highlight");
+      setTimeout(() => el.classList.remove("tool-highlight"), 1500);
+    }
+  }, [toolPositions, navIndex]);
 
   if (!summary) {
     return (
@@ -41,6 +91,9 @@ export function MessageFlow({ messages, summary, onRefresh }: MessageFlowProps) 
     }
   }
 
+  // Assign global tool index for each tool call across all messages
+  let globalToolIdx = 0;
+
   return (
     <div className="flex flex-col h-full">
       {/* Session header */}
@@ -56,11 +109,28 @@ export function MessageFlow({ messages, summary, onRefresh }: MessageFlowProps) 
         </span>
       </div>
 
+      {/* Tool stats bar */}
+      <ToolStats
+        toolCounts={summary.toolCallCounts}
+        onNavigate={handleNavigate}
+      />
+
       {/* Messages */}
       <div ref={scrollRef} className="flex-1 overflow-y-auto px-6 py-4">
-        {messages.map((msg, i) => (
-          <MessageBlock key={msg.uuid || `${msg.timestamp}-${i}`} message={msg} />
-        ))}
+        {messages.map((msg, i) => {
+          // Calculate the starting global tool index for this message
+          const startIdx = globalToolIdx;
+          if (msg.toolCalls) {
+            globalToolIdx += msg.toolCalls.length;
+          }
+          return (
+            <MessageBlock
+              key={msg.uuid || `${msg.timestamp}-${i}`}
+              message={msg}
+              toolStartIdx={startIdx}
+            />
+          );
+        })}
 
         {/* Bottom: refresh button */}
         <div className="flex justify-center py-4">

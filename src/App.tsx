@@ -19,7 +19,6 @@ export function App() {
   const [messages, setMessages] = useState<ParsedMessage[]>([]);
   const [activeSummary, setActiveSummary] = useState<SessionSummary | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
-  const [toolFilter, setToolFilter] = useState("All");
   const [loading, setLoading] = useState(true);
   const [sidebarWidth, setSidebarWidth] = useState(320);
   const [isDragging, setIsDragging] = useState(false);
@@ -28,9 +27,8 @@ export function App() {
 
   const fetchSessions = useCallback(async () => {
     try {
-      const params: { q?: string; tool?: string } = {};
+      const params: { q?: string } = {};
       if (debouncedQuery.trim()) params.q = debouncedQuery.trim();
-      if (toolFilter !== "All") params.tool = toolFilter;
       const data = await getSessions(params);
       setSessions(data);
       if (!activeSessionId && data.length > 0) {
@@ -41,7 +39,7 @@ export function App() {
     } finally {
       setLoading(false);
     }
-  }, [debouncedQuery, toolFilter]);
+  }, [debouncedQuery]);
 
   useEffect(() => {
     fetchSessions();
@@ -106,8 +104,6 @@ export function App() {
           onSelectSession={setActiveSessionId}
           searchQuery={searchQuery}
           onSearchChange={setSearchQuery}
-          toolFilter={toolFilter}
-          onToolFilterChange={setToolFilter}
         />
       </div>
 

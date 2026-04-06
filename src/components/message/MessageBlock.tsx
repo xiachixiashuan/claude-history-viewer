@@ -5,13 +5,14 @@ import type { ParsedMessage } from "@/lib/types";
 
 interface MessageBlockProps {
   message: ParsedMessage;
+  toolStartIdx?: number;
 }
 
-export function MessageBlock({ message }: MessageBlockProps) {
+export function MessageBlock({ message, toolStartIdx = 0 }: MessageBlockProps) {
   const hasToolCalls = message.toolCalls && message.toolCalls.length > 0;
   const cleanedText = cleanText(message.textContent);
 
-  // Skip messages with no visible content (empty after cleaning + no tool calls)
+  // Skip messages with no visible content
   if (!cleanedText && !hasToolCalls) return null;
 
   return (
@@ -24,8 +25,10 @@ export function MessageBlock({ message }: MessageBlockProps) {
       />
       <div className="pl-3.5 border-l border-white/4">
         <TextContent text={message.textContent} role={message.type} />
-        {message.toolCalls?.map((tc) => (
-          <ToolCallCard key={tc.id} tool={tc} />
+        {message.toolCalls?.map((tc, i) => (
+          <div key={tc.id} data-tool-idx={toolStartIdx + i} className="transition-colors duration-500">
+            <ToolCallCard tool={tc} />
+          </div>
         ))}
       </div>
     </div>

@@ -1,5 +1,4 @@
 import { SearchBox } from "./SearchBox";
-import { FilterChips } from "./FilterChips";
 import { SessionList } from "./SessionList";
 import type { SessionSummary } from "@/lib/types";
 
@@ -9,8 +8,6 @@ interface SidebarProps {
   onSelectSession: (id: string) => void;
   searchQuery: string;
   onSearchChange: (q: string) => void;
-  toolFilter: string;
-  onToolFilterChange: (f: string) => void;
 }
 
 export function Sidebar({
@@ -19,8 +16,6 @@ export function Sidebar({
   onSelectSession,
   searchQuery,
   onSearchChange,
-  toolFilter,
-  onToolFilterChange,
 }: SidebarProps) {
   return (
     <div className="w-full h-full flex flex-col bg-background">
@@ -33,7 +28,6 @@ export function Sidebar({
         </div>
         <SearchBox value={searchQuery} onChange={onSearchChange} />
       </div>
-      <FilterChips active={toolFilter} onChange={onToolFilterChange} />
       <SessionList
         sessions={sessions}
         activeSessionId={activeSessionId}
