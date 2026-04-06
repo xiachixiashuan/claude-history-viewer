@@ -44,7 +44,16 @@ sessions.get("/", async (c) => {
       try {
         const summary = await getSessionSummary(filePath);
         if (summary.messageCount === 0) continue;
-        if (toolFilter && !summary.toolCallCounts[toolFilter]) continue;
+        // Support group filters: "Task" matches TaskCreate/TaskUpdate/etc, "Web" matches WebFetch/WebSearch
+        if (toolFilter) {
+          const tools = Object.keys(summary.toolCallCounts);
+          const match = toolFilter === "Task"
+            ? tools.some(t => t.startsWith("Task") || t === "TodoWrite")
+            : toolFilter === "Web"
+            ? tools.some(t => t.startsWith("Web"))
+            : tools.includes(toolFilter);
+          if (!match) continue;
+        }
         if (query && !summary.firstUserMessage.toLowerCase().includes(query)) continue;
         allSummaries.push({ ...summary, project: dir });
       } catch {

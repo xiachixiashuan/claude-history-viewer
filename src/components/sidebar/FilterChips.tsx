@@ -1,4 +1,4 @@
-const FILTERS = ["All", "Bash", "Agent", "Skill", "Edit", "Read", "Write", "Grep"];
+const FILTERS = ["All", "Bash", "Agent", "Skill", "Edit", "Read", "Write", "Grep", "Glob", "Task", "Web"];
 
 interface FilterChipsProps {
   active: string;
