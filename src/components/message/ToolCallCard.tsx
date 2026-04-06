@@ -103,7 +103,7 @@ export function ToolCallCard({ tool }: ToolCallCardProps) {
           <span className={`text-[10px] ${status.className}`}>{status.text}</span>
         )}
       </div>
-      <div className="text-[11px] text-muted-foreground mt-1.5 font-mono break-all">
+      <div className="text-[11px] text-muted-foreground mt-1.5 font-mono break-all whitespace-pre-wrap">
         {summarizeInput(tool)}
       </div>
       <ToolResult result={tool.result ?? ""} isError={tool.isError} toolName={tool.name} />
